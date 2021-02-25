@@ -99,17 +99,6 @@ namespace FluentAssertions.System.Text.Json.UnitTests
             act.Should().Throw<XunitException>();
         }
 
-        [Fact]
-        public void ElementValueNumber()
-        {
-            using var documentBase = JsonDocument.Parse(@" { ""firstName"": 123 }");
-            using var expected = JsonDocument.Parse(@" { ""firstName"": 123 }");
-
-            var actualProperty = documentBase.RootElement.GetTypedProperty("firstName");
-            var expectedProperty = expected.RootElement.GetTypedProperty("firstName");
-
-            actualProperty.Should().Be(expectedProperty);
-        }
 
         [Fact]
         public void ElementValueNumberFail()
@@ -178,18 +167,6 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         }
 
         [Fact]
-        public void ElementObject()
-        {
-            using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"", ""secondName"":""Foo"" }");
-            using var expected = JsonDocument.Parse(@" {  ""secondName"":""Foo"", ""firstName"": ""Bobby"" }");
-
-            var actualProperty = documentBase.RootElement;
-            var expectedProperty = expected.RootElement;
-
-            actualProperty.Should().HaveEqualValue(expectedProperty);
-        }
-
-        [Fact]
         public void ElementObjectFail()
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"", ""secondName"":""Foo"" }");
@@ -227,6 +204,24 @@ namespace FluentAssertions.System.Text.Json.UnitTests
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
+        }
+
+        [Theory]
+        [InlineData(@" { ""toggle.showIntro"": null }", @" {  ""toggle.showIntro"": null }")]
+        [InlineData(@" { ""toggle.showIntro"": true }", @" {  ""toggle.showIntro"": true }")]
+        [InlineData(@" { ""firstName"": null }", @" {  ""firstName"": null }")]
+        [InlineData(@" { ""soundVolume"": 100 }", @" {  ""soundVolume"": 100 }")]
+        [InlineData(@" { ""firstName"": ""Bobby"", ""secondName"":""Foo"" }", @" {  ""secondName"":""Foo"", ""firstName"": ""Bobby"" }")]
+
+        public void HaveEqualValue_Basic_Success(string subject, string expectedJson)
+        {
+            using var documentBase = JsonDocument.Parse(subject);
+            using var expected = JsonDocument.Parse(expectedJson);
+
+            var actualProperty = documentBase.RootElement;
+            var expectedProperty = expected.RootElement;
+
+            actualProperty.Should().HaveEqualValue(expectedProperty);
         }
     }
 }

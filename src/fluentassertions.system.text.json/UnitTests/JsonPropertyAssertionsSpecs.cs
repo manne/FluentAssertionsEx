@@ -53,7 +53,7 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         }
 
         [Fact]
-        public void BeEqual()
+        public void BeEqualFail()
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"" }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": ""Bobby22"" }");
@@ -61,7 +61,9 @@ namespace FluentAssertions.System.Text.Json.UnitTests
             var property = documentBase.RootElement.GetTypedProperty("firstName");
             var expectedProperty = expected.RootElement.GetTypedProperty("firstName");
 
-            property.Should().Be(expectedProperty);
+            Action act = () => property.Should().Be(expectedProperty);
+
+            act.Should().Throw<XunitException>();
         }
 
         [Fact]
