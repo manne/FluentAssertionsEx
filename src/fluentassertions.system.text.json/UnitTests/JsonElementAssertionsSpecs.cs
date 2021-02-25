@@ -12,13 +12,26 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         public void ElementHasProperty()
         {
             using var documentBase = JsonDocument.Parse(@" { ""fullName"": ""Bobby"" }");
+
             documentBase.RootElement.Should().HaveProperty("fullName");
+        }
+
+        [Fact]
+        public void ElementHasPropertyChaining()
+        {
+            using var documentBase = JsonDocument.Parse(@" { ""fullName"": ""Bobby"" }");
+
+            documentBase.RootElement
+                .Should().HaveProperty("fullName")
+                .Which.SubjectValue.Should().BeAString()
+                .Subject.Should().Be("Bobby");
         }
 
         [Fact]
         public void ElementDoesNotHaveProperty()
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"" }");
+
             Action act = () => documentBase.RootElement.Should().HaveProperty("fullName");
 
             act.Should().Throw<XunitException>();
@@ -65,8 +78,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"" }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": ""Bobby"" }");
+
             var actualProperty = documentBase.RootElement.GetTypedProperty("firstName");
             var expectedProperty = expected.RootElement.GetTypedProperty("firstName");
+
             actualProperty.Should().Be(expectedProperty);
         }
 
@@ -75,8 +90,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"" }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": ""Bobby The second"" }");
+
             var actualProperty = documentBase.RootElement.GetProperty("firstName");
             var expectedProperty = expected.RootElement.GetProperty("firstName");
+
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
@@ -87,8 +104,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": 123 }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": 123 }");
+
             var actualProperty = documentBase.RootElement.GetTypedProperty("firstName");
             var expectedProperty = expected.RootElement.GetTypedProperty("firstName");
+
             actualProperty.Should().Be(expectedProperty);
         }
 
@@ -97,8 +116,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": 123 }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": 456 }");
+
             var actualProperty = documentBase.RootElement.GetProperty("firstName");
             var expectedProperty = expected.RootElement.GetProperty("firstName");
+
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
@@ -109,8 +130,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": false }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": false }");
+
             var actualProperty = documentBase.RootElement.GetTypedProperty("firstName");
             var expectedProperty = expected.RootElement.GetTypedProperty("firstName");
+
             actualProperty.Should().Be(expectedProperty);
         }
 
@@ -119,8 +142,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": true }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": false }");
+
             var actualProperty = documentBase.RootElement.GetProperty("firstName");
             var expectedProperty = expected.RootElement.GetProperty("firstName");
+
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
@@ -131,8 +156,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": true }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": true }");
+
             var actualProperty = documentBase.RootElement.GetTypedProperty("firstName");
             var expectedProperty = expected.RootElement.GetTypedProperty("firstName");
+
             actualProperty.Should().Be(expectedProperty);
         }
 
@@ -141,8 +168,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": false }");
             using var expected = JsonDocument.Parse(@" { ""firstName"": true }");
+
             var actualProperty = documentBase.RootElement.GetProperty("firstName");
             var expectedProperty = expected.RootElement.GetProperty("firstName");
+
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
@@ -153,8 +182,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"", ""secondName"":""Foo"" }");
             using var expected = JsonDocument.Parse(@" {  ""secondName"":""Foo"", ""firstName"": ""Bobby"" }");
+
             var actualProperty = documentBase.RootElement;
             var expectedProperty = expected.RootElement;
+
             actualProperty.Should().HaveEqualValue(expectedProperty);
         }
 
@@ -163,8 +194,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" { ""firstName"": ""Bobby"", ""secondName"":""Foo"" }");
             using var expected = JsonDocument.Parse(@" {  ""secondName"":""Bar"", ""firstName"": ""Bobby"" }");
+
             var actualProperty = documentBase.RootElement;
             var expectedProperty = expected.RootElement;
+
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
@@ -175,8 +208,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" [{ ""firstName"": ""Bobby""}]");
             using var expected = JsonDocument.Parse(@"[{ ""firstName"": ""Bobby""}]");
+
             var actualProperty = documentBase.RootElement;
             var expectedProperty = expected.RootElement;
+
             actualProperty.Should().HaveEqualValue(expectedProperty);
         }
 
@@ -185,8 +220,10 @@ namespace FluentAssertions.System.Text.Json.UnitTests
         {
             using var documentBase = JsonDocument.Parse(@" [{ ""firstName"": ""Bobby""}]");
             using var expected = JsonDocument.Parse(@" [{ ""secondName"": ""Bobby""}]");
+
             var actualProperty = documentBase.RootElement;
             var expectedProperty = expected.RootElement;
+
             Action act = () => actualProperty.Should().HaveEqualValue(expectedProperty);
 
             act.Should().Throw<XunitException>();
